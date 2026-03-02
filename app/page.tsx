@@ -231,7 +231,7 @@ export default function AuthPage() {
             <AvatarSelector selected={selectedAvatar} onSelect={() => setShowAvatarModal(true)} />
             <div className="grid grid-cols-2 gap-3">
               <Input placeholder="Usuario" value={username} onChange={setUsername} />
-              <Input placeholder="País" value={country} onChange={setCountry} />
+              <SelectCountry value={country} onChange={setCountry} />
             </div>
             <Input placeholder="Nombre Completo" value={fullName} onChange={setFullName} />
             <DateInput value={dob} onChange={setDob} />
@@ -259,7 +259,7 @@ export default function AuthPage() {
 
             <div className="grid grid-cols-2 gap-3">
               <Input placeholder="Usuario único" value={username} onChange={setUsername} />
-              <Input placeholder="País" value={country} onChange={setCountry} />
+              <SelectCountry value={country} onChange={setCountry} />
             </div>
             <DateInput value={dob} onChange={setDob} />
 
@@ -319,9 +319,15 @@ function Input({ placeholder, type = "text", value, onChange }: any) {
 function DateInput({ value, onChange }: any) {
   return (
     <div className="relative">
-      <label className="absolute left-4 top-1/2 -translate-y-1/2 text-[10px] uppercase font-bold text-gray-400 tracking-widest pointer-events-none">Nacimiento</label>
+      {!value && (
+        <label className="absolute left-4 top-1/2 -translate-y-1/2 text-[10px] uppercase font-bold text-gray-400 tracking-widest pointer-events-none">
+          Nacimiento
+        </label>
+      )}
       <input type="date" required value={value} onChange={(e) => onChange(e.target.value)}
-        className="w-full bg-gray-50 border border-gray-100 rounded-xl py-3 pl-[100px] pr-4 text-sm focus:outline-none focus:border-brand-gold transition-colors text-brand-dark"
+        className={`w-full bg-gray-50 border border-gray-100 rounded-xl py-3 pr-4 text-sm focus:outline-none focus:border-brand-gold transition-colors text-brand-dark ${
+          !value ? 'pl-[100px] text-transparent' : 'pl-4 text-brand-dark'
+        }`}
       />
     </div>
   );
@@ -339,5 +345,213 @@ function DividerGoogle({ onClick }: { onClick: () => void }) {
         <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className="w-5 h-5" /> Google
       </button>
     </>
+  );
+}
+
+function SelectCountry({ value, onChange }: { value: string, onChange: (val: string) => void }) {
+  const countries = [
+    "Afganistán",
+    "Albania",
+    "Alemania",
+    "Andorra",
+    "Angola",
+    "Antigua y Barbuda",
+    "Arabia Saudita",
+    "Argelia",
+    "Argentina",
+    "Armenia",
+    "Australia",
+    "Austria",
+    "Azerbaiyán",
+    "Bahamas",
+    "Bangladés",
+    "Barbados",
+    "Baréin",
+    "Bélgica",
+    "Belice",
+    "Benín",
+    "Bielorrusia",
+    "Birmania",
+    "Bolivia",
+    "Bosnia y Herzegovina",
+    "Botsuana",
+    "Brasil",
+    "Brunéi",
+    "Bulgaria",
+    "Burkina Faso",
+    "Burundi",
+    "Bután",
+    "Cabo Verde",
+    "Camboya",
+    "Camerún",
+    "Canadá",
+    "Catar",
+    "Chad",
+    "Chile",
+    "China",
+    "Chipre",
+    "Ciudad del Vaticano",
+    "Colombia",
+    "Comoras",
+    "Corea del Norte",
+    "Corea del Sur",
+    "Costa de Marfil",
+    "Costa Rica",
+    "Croacia",
+    "Cuba",
+    "Dinamarca",
+    "Dominica",
+    "Ecuador",
+    "Egipto",
+    "El Salvador",
+    "Emiratos Árabes Unidos",
+    "Eritrea",
+    "Eslovaquia",
+    "Eslovenia",
+    "España",
+    "Estados Unidos",
+    "Estonia",
+    "Etiopía",
+    "Fiyi",
+    "Filipinas",
+    "Finlandia",
+    "Francia",
+    "Gabon",
+    "Gambia",
+    "Georgia",
+    "Ghana",
+    "Granada",
+    "Grecia",
+    "Guatemala",
+    "Guinea",
+    "Guinea-Bisáu",
+    "Guinea Ecuatorial",
+    "Guyana",
+    "Haití",
+    "Honduras",
+    "Hungría",
+    "India",
+    "Indonesia",
+    "Irak",
+    "Irán",
+    "Irlanda",
+    "Islandia",
+    "Islas Marshall",
+    "Islas Salomón",
+    "Israel",
+    "Italia",
+    "Jamaica",
+    "Japón",
+    "Jordania",
+    "Kazajistán",
+    "Kenia",
+    "Kiribati",
+    "Kuwait",
+    "Kyrgyzstán",
+    "Laos",
+    "Letonia",
+    "Líbano",
+    "Lesoto",
+    "Liberia",
+    "Libia",
+    "Liechtenstein",
+    "Lituania",
+    "Luxemburgo",
+    "Macedonia del Norte",
+    "Madagascar",
+    "Malasia",
+    "Malaui",
+    "Maldivas",
+    "Mali",
+    "Malta",
+    "Mauritania",
+    "Mauricio",
+    "México",
+    "Moldavia",
+    "Mónaco",
+    "Mongolia",
+    "Montenegro",
+    "Marruecos",
+    " Mozambique",
+    "Myanmar",
+    "Namibia",
+    "Nauru",
+    "Nepal",
+    "Nicaragua",
+    "Níger",
+    "Nigeria",
+    "Noruega",
+    "Nueva Zelanda",
+    "Omán",
+    "Países Bajos",
+    "Pakistán",
+    "Palau",
+    "Panamá",
+    "Papúa Nueva Guinea",
+    "Paraguay",
+    "Perú",
+    "Polonia",
+    "Portugal",
+    "Qatar",
+    "Reino Unido",
+    "República Centroafricana",
+    "República Checa",
+    "República Dominicana",
+    "Ruanda",
+    "Rumania",
+    "Rusia",
+    "San Cristóbal y Nieves",
+    "San Marino",
+    "San Vicente y las Granadinas",
+    "Santo Tomé y Príncipe",
+    "Santa Lucía",
+    "Senegal",
+    "Serbia",
+    "Seychelles",
+    "Sierra Leona",
+    "Singapur",
+    "Siria",
+    "Somalia",
+    "Sudáfrica",
+    "Sudán",
+    "Sudán del Sur",
+    "Surinam",
+    "Suecia",
+    "Suiza",
+    "Tailandia",
+    "Tanzania",
+    "Tayikistán",
+    "Timor Oriental",
+    "Togo",
+    "Tonga",
+    "Trinidad y Tobago",
+    "Túnez",
+    "Turkmenistán",
+    "Turquía",
+    "Tuvalu",
+    "Ucrania",
+    "Uganda",
+    "Uruguay",
+    "Uzbekistán",
+    "Vanuatu",
+    "Venezuela",
+    "Vietnam",
+    "Yemen",
+    "Zambia",
+    "Zimbabue"
+  ];
+
+  return (
+    <select 
+      required 
+      value={value} 
+      onChange={(e) => onChange(e.target.value)}
+      className={`w-full bg-gray-50 border border-gray-100 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-brand-gold transition-colors appearance-none ${!value ? 'text-gray-400' : 'text-brand-dark'}`}
+    >
+      <option value="" disabled hidden>Selecciona tu país</option>
+      {countries.map(c => (
+        <option key={c} value={c} className="text-brand-dark">{c}</option>
+      ))}
+    </select>
   );
 }

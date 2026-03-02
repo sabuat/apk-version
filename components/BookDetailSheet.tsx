@@ -42,7 +42,11 @@ export default function BookDetailSheet({ book, onClose }: { book: any, onClose:
 
       <div className="flex-grow overflow-y-auto z-10 relative p-6 flex flex-col items-center">
         <div className="relative w-[210px] h-[315px] shrink-0 mb-8 shadow-2xl rounded-md overflow-hidden">
-          <img src={book.cover_url} className="w-full h-full object-cover" alt={book.title} />
+          <img 
+            src={book.cover_url} 
+            className={`w-full h-full object-cover transition-opacity duration-300 ${!book.published ? 'opacity-85' : ''}`} 
+            alt={book.title} 
+          />
         </div>
         <h2 className="text-3xl font-serif italic text-brand-gold text-center mb-2">{book.title}</h2>
         <p className="text-xs font-texto uppercase tracking-[0.3em] text-brand-dark/60 mb-8">{book.author}</p>

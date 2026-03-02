@@ -59,10 +59,10 @@ export default function BookGallery() {
             className="relative aspect-[5/8] w-full bg-[#f2f2f2] rounded-md overflow-hidden shadow-lg active:scale-95 transition-transform cursor-pointer border border-brand-gold/5 block"
           >
             {book.cover_url ? (
-              <img
-                src={book.cover_url}
-                alt={book.title}
-                className="absolute inset-0 w-full h-full object-cover block"
+              <img 
+                src={book.cover_url} 
+                alt={book.title} 
+                className={`w-full h-full object-cover ${!book.published ? 'opacity-85' : ''}`} 
               />
             ) : (
               <div className="w-full h-full bg-brand-blue-bg flex items-center justify-center">
