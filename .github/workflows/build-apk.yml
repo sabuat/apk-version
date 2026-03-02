@@ -19,7 +19,7 @@ jobs:
           node-version: '22.x'
 
       - name: 3. Instalar dependencias de NPM
-        run: npm install
+        run: npm install --legacy-peer-deps
 
       - name: 4. Exportar Next.js (Archivos estáticos)
         env:
