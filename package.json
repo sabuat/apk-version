@@ -1,6 +1,6 @@
 {
   "name": "reader-app",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@capacitor/android": "^8.1.0",
+    "@capacitor/app": "^8.0.1",
     "@capacitor/core": "^8.1.0",
     "@supabase/supabase-js": "^2.97.0",
     "framer-motion": "^12.34.3",
