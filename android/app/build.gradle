@@ -21,9 +21,9 @@ android {
     signingConfigs {
         release {
             storeFile file('apapacho-release.keystore')
-            storePassword 'apapacho123' // Pon aquí la contraseña que inventaste
+            storePassword '#Apapacho2025' // Pon aquí la contraseña que inventaste
             keyAlias 'apapacho'
-            keyPassword 'apapacho123' // La misma contraseña
+            keyPassword '#Apapacho2025' // La misma contraseña
         }
     }
 
