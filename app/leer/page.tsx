@@ -147,14 +147,14 @@ function ReaderContent() {
 
       <article className="flex-grow px-6 max-w-2xl mx-auto w-full pt-4 pb-32">
         <header className="mb-14 text-center">
-          <h1 className={`text-4xl font-serif italic leading-tight transition-colors duration-500 ${nightMode ? 'text-brand-gold' : 'text-brand-dark'}`}>
+          <h1 className={`text-3xl font-serif italic leading-tight transition-colors duration-500 ${nightMode ? 'text-brand-gold' : 'text-brand-dark'}`}>
             {currentChapter.title}
           </h1>
           <div className="h-px bg-brand-gold/30 w-12 mx-auto mt-10" />
         </header>
 
         <div className="prose prose-stone">
-          <p className={`font-texto leading-[2] whitespace-pre-line text-justify mb-20 transition-all duration-500 ${fontSize} ${nightMode ? 'text-[#D4AF37]/90' : 'text-brand-dark/90'}`}>
+          <p className={`font-texto leading-[1.25] whitespace-pre-line text-justify mb-20 transition-all duration-500 ${fontSize} ${nightMode ? 'text-[#D4AF37]/90' : 'text-brand-dark/90'}`}>
             {currentChapter.content}
           </p>
         </div>

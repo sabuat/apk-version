@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from 'framer-motion';
-import { X, Home, Bookmark, BookOpen, User, LogOut, ChevronRight } from 'lucide-react';
+import { X, Home, Bookmark, BookOpen, User, LogOut, ChevronRight, Globe, Instagram } from 'lucide-react';
 import Link from 'next/link';
 
 export default function SideMenu({ onClose }: { onClose: () => void }) {
@@ -10,6 +10,8 @@ export default function SideMenu({ onClose }: { onClose: () => void }) {
     { icon: Bookmark, label: 'Mi lista', href: '/lista' },
     { icon: BookOpen, label: 'Lecturas', href: '/lecturas' },
     { icon: User, label: 'Mi cuenta', href: '/cuenta' },
+    { icon: Globe, label: 'Web', href: 'https://editorialapapacho.com' },
+    { icon: Instagram, label: 'Instagram', href: 'https://instagram.com/editorial.apapacho' },
   ];
 
   return (
@@ -20,14 +22,19 @@ export default function SideMenu({ onClose }: { onClose: () => void }) {
         initial={{ x: '100%' }} animate={{ x: '0%' }} exit={{ x: '100%' }}
         transition={{ type: 'spring', damping: 25, stiffness: 200 }}
         className="absolute inset-y-0 right-0 w-[75%] bg-brand-bg shadow-2xl flex flex-col border-l border-brand-gold/10"
+        style={{ 
+          // ESTO SOLUCIONA QUE LA 'X' Y LA VERSIÓN SE CORTEN EN EL TELÉFONO
+          paddingTop: 'env(safe-area-inset-top)', 
+          paddingBottom: 'env(safe-area-inset-bottom)' 
+        }}
       >
-        <div className="p-6 flex justify-end border-b border-brand-gold/5">
+        <div className="p-6 flex justify-end border-b border-brand-gold/5 shrink-0">
           <button onClick={onClose} className="p-2 active:scale-90 transition-transform">
             <X size={28} className="text-brand-dark" />
           </button>
         </div>
 
-        <div className="flex-grow p-6 space-y-2">
+        <div className="flex-grow overflow-y-auto p-6 space-y-2">
           {menuItems.map((item) => (
             <Link 
               key={item.label} 
@@ -44,15 +51,15 @@ export default function SideMenu({ onClose }: { onClose: () => void }) {
           ))}
         </div>
 
-        <div className="p-8 border-t border-brand-gold/5">
+        <div className="p-8 border-t border-brand-gold/5 shrink-0">
           <button className="w-full flex items-center gap-4 p-4 text-brand-red active:scale-95 transition-transform">
             <LogOut size={22} />
             <span className="font-bold text-sm uppercase tracking-widest">Sign Out</span>
           </button>
         </div>
-        <div className="mt-auto pb-4 text-center">
+        <div className="mt-auto pb-4 text-center shrink-0">
           <span className="text-[10px] font-bold tracking-widest text-gray-400 uppercase">
-            Apapacho Reader - Versión 1.6.26
+            Apapacho Reader - Versión 1.6.27
           </span>
         </div>
       </motion.div>

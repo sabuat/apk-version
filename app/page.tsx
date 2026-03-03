@@ -19,6 +19,9 @@ const AVATARS = [
 export default function AuthPage() {
   const router = useRouter();
   
+  // ESTADO NUEVO: Controla la pantalla de carga inicial para evitar el parpadeo
+  const [isCheckingSession, setIsCheckingSession] = useState(true);
+
   const [view, setView] = useState<'login' | 'register' | 'complete_profile'>('login');
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
@@ -55,6 +58,7 @@ export default function AuthPage() {
         if (profile) {
           const lastRoute = localStorage.getItem('apapacho_last_route') || '/home';
           router.push(lastRoute);
+          return; // Detenemos la ejecución aquí para que se quede cargando mientras cambia de ruta
         } else {
           setAuthUserId(session.user.id);
           setRegEmail(session.user.email || '');
@@ -62,12 +66,17 @@ export default function AuthPage() {
           setView('complete_profile');
         }
       }
+      
+      if (isMounted) {
+        setIsCheckingSession(false); // Solo mostramos el login si comprobamos que NO hay sesión
+      }
     };
 
     checkCurrentSession();
 
     const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
       if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session?.user && isMounted) {
+        setIsCheckingSession(true); // Ocultamos el form si detecta un nuevo login
         checkCurrentSession();
       }
     });
@@ -175,6 +184,21 @@ export default function AuthPage() {
       setErrorMsg('Error al iniciar sesión con Google.');
     }
   };
+
+  // PANTALLA DE CARGA INICIAL (Evita el parpadeo del login)
+  if (isCheckingSession) {
+    return (
+      <div className="min-h-[100dvh] bg-[#F9F9F7] flex flex-col items-center justify-center p-6">
+        <motion.img 
+          initial={{ opacity: 0.5, scale: 0.95 }} 
+          animate={{ opacity: 1, scale: 1 }} 
+          transition={{ repeat: Infinity, duration: 1, repeatType: "reverse" }}
+          src="/logo-nuevo.png" alt="Cargando Apapacho..." 
+          className="w-48 object-contain drop-shadow-sm" 
+        />
+      </div>
+    );
+  }
 
   return (
     <div 
@@ -318,7 +342,6 @@ export default function AuthPage() {
   );
 }
 
-// Mini componentes (Mantienen estilos originales)
 function AvatarSelector({ selected, onSelect }: { selected: string, onSelect: () => void }) {
   return (
     <div className="flex flex-col items-center mb-6">
