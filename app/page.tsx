@@ -5,7 +5,7 @@ import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Mail, Lock, User, Check, X } from 'lucide-react';
-import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth'; // <-- IMPORT NATIVO AGREGADO
+import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth'; 
 
 const AVATARS = [
   '/avatar/avatar-1.png',
@@ -19,19 +19,15 @@ const AVATARS = [
 export default function AuthPage() {
   const router = useRouter();
   
-  // Vistas: 'login' | 'register' | 'complete_profile'
   const [view, setView] = useState<'login' | 'register' | 'complete_profile'>('login');
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   
-  // Datos del Usuario Autenticado (para el flujo de Google)
   const [authUserId, setAuthUserId] = useState('');
 
-  // Estados para Login
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
 
-  // Estados para Registro y Completar Perfil
   const [selectedAvatar, setSelectedAvatar] = useState('');
   const [username, setUsername] = useState('');
   const [fullName, setFullName] = useState('');
@@ -43,11 +39,9 @@ export default function AuthPage() {
 
   const [showAvatarModal, setShowAvatarModal] = useState(false);
 
-  // VIGILANTE DE SESIÓN (Detecta cuando alguien entra con Google)
   useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (session?.user) {
-        // Alguien inició sesión (puede ser con Google o normal). Revisamos si ya tiene perfil.
         const { data: profile } = await supabase
           .from('profiles')
           .select('id')
@@ -55,16 +49,13 @@ export default function AuthPage() {
           .maybeSingle();
 
         if (profile) {
-          // Ya tiene cuenta completa, lo mandamos al home
-          router.push('/home');
+          // SOLUCIÓN: Leemos dónde estaba antes de que Android recargara la app
+          const lastRoute = localStorage.getItem('apapacho_last_route') || '/home';
+          router.push(lastRoute);
         } else {
-          // Es un usuario NUEVO que entró con Google. 
-          // Rescatamos los datos que Google sí nos dio.
           setAuthUserId(session.user.id);
           setRegEmail(session.user.email || '');
           setFullName(session.user.user_metadata?.full_name || '');
-          
-          // Lo mandamos a la vista de completar lo que falta
           setView('complete_profile');
         }
       }
@@ -73,7 +64,6 @@ export default function AuthPage() {
     return () => { authListener.subscription.unsubscribe(); };
   }, [router]);
 
-  // Validar edad
   const isOldEnough = (birthDateString: string) => {
     const today = new Date();
     const birthDate = new Date(birthDateString);
@@ -121,7 +111,6 @@ export default function AuthPage() {
     }
   };
 
-  // Guardar datos después de Google
   const handleCompleteProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true); setErrorMsg('');
@@ -153,7 +142,6 @@ export default function AuthPage() {
     router.push('/home');
   };
 
-  // <-- FUNCIÓN NATIVA DE GOOGLE ACTUALIZADA -->
   const handleGoogleLogin = async () => {
     try {
       GoogleAuth.initialize();
@@ -216,7 +204,6 @@ export default function AuthPage() {
           </div>
         )}
 
-        {/* ----------------- LOGIN NORMAL ----------------- */}
         {view === 'login' && (
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="relative">
@@ -242,7 +229,6 @@ export default function AuthPage() {
           </form>
         )}
 
-        {/* ----------------- REGISTRO NORMAL ----------------- */}
         {view === 'register' && (
           <form onSubmit={handleRegister} className="space-y-4">
             <AvatarSelector selected={selectedAvatar} onSelect={() => setShowAvatarModal(true)} />
@@ -262,7 +248,6 @@ export default function AuthPage() {
           </form>
         )}
 
-        {/* ----------------- COMPLETAR PERFIL (GOOGLE) ----------------- */}
         {view === 'complete_profile' && (
           <form onSubmit={handleCompleteProfile} className="space-y-4">
             <AvatarSelector selected={selectedAvatar} onSelect={() => setShowAvatarModal(true)} />
@@ -286,7 +271,6 @@ export default function AuthPage() {
         )}
       </div>
 
-      {/* MODAL DE AVATARES */}
       <AnimatePresence>
         {showAvatarModal && (
           <motion.div initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }} transition={{ type: 'spring', damping: 25, stiffness: 200 }} className="fixed inset-0 z-50 bg-[#F9F9F7] flex flex-col p-6">
@@ -309,8 +293,7 @@ export default function AuthPage() {
   );
 }
 
-// ---- Mini componentes para limpiar el código visualmente ----
-
+// Mini componentes
 function AvatarSelector({ selected, onSelect }: { selected: string, onSelect: () => void }) {
   return (
     <div className="flex flex-col items-center mb-6">

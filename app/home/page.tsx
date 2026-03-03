@@ -10,7 +10,6 @@ export default function BookGallery() {
   const [selectedBook, setSelectedBook] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  // NUEVO: Estados para el modal de lanzamiento
   const [newReleaseBook, setNewReleaseBook] = useState<any>(null);
   const [showNewModal, setShowNewModal] = useState(false);
 
@@ -24,15 +23,14 @@ export default function BookGallery() {
       if (data) {
         setBooks(data);
         
-        // Buscamos si hay algún libro marcado como "new" (true)
         const promotedBook = data.find(b => b.new === true);
         
-        // Si existe un libro nuevo Y el usuario no ha visto el modal en esta sesión
-        if (promotedBook && !sessionStorage.getItem('apapacho_new_seen')) {
+        // SOLUCIÓN: Usamos localStorage y el ID del libro. 
+        // Solo lo verá UNA vez. Si cambias el libro "new" en la BD, lo verá una vez para el nuevo.
+        if (promotedBook && !localStorage.getItem(`apapacho_new_seen_${promotedBook.id}`)) {
           setNewReleaseBook(promotedBook);
           setShowNewModal(true);
-          // Marcamos en la memoria temporal que ya lo vio
-          sessionStorage.setItem('apapacho_new_seen', 'true');
+          localStorage.setItem(`apapacho_new_seen_${promotedBook.id}`, 'true');
         }
       }
       setLoading(false);
@@ -73,7 +71,6 @@ export default function BookGallery() {
         ))}
       </div>
 
-      {/* MODAL DEL LIBRO (El panel deslizable normal) */}
       <AnimatePresence>
         {selectedBook && (
           <BookDetailSheet
@@ -83,7 +80,6 @@ export default function BookGallery() {
         )}
       </AnimatePresence>
 
-      {/* MODAL DE NUEVO LANZAMIENTO (Aparece una vez por sesión) */}
       <AnimatePresence>
         {showNewModal && newReleaseBook && (
           <motion.div 
@@ -100,7 +96,6 @@ export default function BookGallery() {
                 </button>
               </div>
               
-              {/* Portada del libro promocionado */}
               <div className="w-32 aspect-[5/8] mx-auto rounded-xl overflow-hidden shadow-lg mb-6 border border-brand-gold/20">
                 {newReleaseBook.cover_url ? (
                   <img src={newReleaseBook.cover_url} alt={newReleaseBook.title} className="w-full h-full object-cover" />
@@ -111,7 +106,6 @@ export default function BookGallery() {
                 )}
               </div>
 
-              {/* Mensaje dinámico */}
               <p className="text-sm font-texto text-brand-dark/80 mb-8 leading-relaxed px-2">
                 El nuevo libro de <strong className="text-brand-dark font-bold">{newReleaseBook.author}</strong> está disponible en Apapacho Reader. ¡No dejes de leer <strong className="font-serif italic text-brand-gold">{newReleaseBook.title}</strong>!
               </p>
@@ -119,7 +113,7 @@ export default function BookGallery() {
               <button 
                 onClick={() => {
                   setShowNewModal(false);
-                  setSelectedBook(newReleaseBook); // Si tocan el botón, se cierra el modal y abre los detalles de ese libro automáticamente
+                  setSelectedBook(newReleaseBook);
                 }}
                 className="w-full bg-brand-dark-blue text-white py-4 rounded-2xl font-bold text-[11px] uppercase tracking-widest active:scale-95 transition-all shadow-lg shadow-brand-dark-blue/20"
               >
@@ -129,7 +123,6 @@ export default function BookGallery() {
           </motion.div>
         )}
       </AnimatePresence>
-
     </div>
   );
 }

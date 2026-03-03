@@ -2,7 +2,7 @@
 
 import './globals.css';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { Home, Bookmark, BookOpen, User, Menu } from 'lucide-react';
 import { AnimatePresence } from 'framer-motion';
@@ -15,18 +15,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const router = useRouter();
 
   const isReadingMode = pathname?.startsWith('/leer/');
-  
-  // Mostrar la navegación solo si NO estamos en la página de login (ruta raíz '/')
   const showNav = pathname !== '/';
 
-  // Función para determinar si un link está activo
+  // SOLUCIÓN: Guardar la última pantalla (excepto el login) para restaurarla si Android duerme la app
+  useEffect(() => {
+    if (pathname && pathname !== '/') {
+      localStorage.setItem('apapacho_last_route', pathname);
+    }
+  }, [pathname]);
+
   const isActive = (path: string) => pathname === path;
 
   return (
     <html lang="es">
       <body className="bg-brand-bg text-brand-dark min-h-[100dvh] flex flex-col overflow-x-hidden antialiased">
         
-        {/* ENCABEZADO SUPERIOR: Solo se muestra si hay navegación y NO estamos leyendo */}
         {showNav && !isReadingMode && (
           <header className="fixed top-0 w-full h-16 bg-brand-bg/80 backdrop-blur-md z-40 px-6 flex justify-between items-center border-b border-brand-gold/10">
             <Link href="/home" className="flex items-center active:scale-95 transition-transform">
@@ -43,12 +46,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {isMenuOpen && <SideMenu onClose={() => setIsMenuOpen(false)} />}
         </AnimatePresence>
 
-        {/* CONTENIDO PRINCIPAL: Ajusta los márgenes automáticamente dependiendo de si hay barras */}
         <main className={`flex-grow w-full overflow-x-hidden ${(!showNav || isReadingMode) ? 'pt-0' : 'pt-16'} ${!showNav ? 'pb-0' : 'pb-24'}`}>
           {children}
         </main>
 
-        {/* NAVEGACIÓN INFERIOR: Solo se muestra si hay navegación permitida */}
         {showNav && (
           <nav className="fixed bottom-0 w-full h-20 bg-white/90 backdrop-blur-lg border-t border-brand-gold/10 px-8 flex justify-between items-center z-40 pb-4 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
             <Link href="/home" className={`flex flex-col items-center gap-1 transition-all active:scale-90 ${isActive('/home') ? 'text-brand-dark-blue' : 'text-gray-400'}`}>
