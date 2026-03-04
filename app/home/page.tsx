@@ -33,7 +33,7 @@ export default function BookGallery() {
         .from('books')
         .select('*')
         .order('published', { ascending: false })
-        .order('identificador', { ascending: true });
+        .order('identificador', { ascending: true }); // Mantiene el orden numérico
 
       if (data) {
         setBooks(data);
@@ -79,6 +79,7 @@ export default function BookGallery() {
       
       {/* HEADER CON BOTÓN DE FILTRO REDISEÑADO */}
       <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-serif italic text-brand-dark">Explorar</h1>
         <button 
           onClick={() => setShowFilterPanel(true)}
           className={`relative p-3 rounded-full transition-colors ${hasActiveFilters ? 'bg-brand-dark-blue/10' : 'bg-transparent active:bg-brand-gold/5'}`}
@@ -90,7 +91,7 @@ export default function BookGallery() {
         </button>
       </div>
 
-      {/* GALERÍA DE LIBROS LIMPIA (SIN ETIQUETAS DE IDIOMA) */}
+      {/* GALERÍA DE LIBROS */}
       {filteredBooks.length > 0 ? (
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 items-start w-full">
           {filteredBooks.map((book) => (
@@ -103,7 +104,7 @@ export default function BookGallery() {
                 <img 
                   src={book.cover_url} 
                   alt={book.title} 
-                  className={`w-full h-full object-cover ${!book.published ? 'opacity-30' : ''}`} 
+                  className={`w-full h-full object-cover ${!book.published ? 'opacity-[0.45]' : ''}`} 
                 />
               ) : (
                 <div className="w-full h-full bg-brand-blue-bg flex items-center justify-center">
@@ -144,10 +145,7 @@ export default function BookGallery() {
                 </button>
               </div>
 
-              {/* CONTENIDO DEL PANEL CON SCROLL INTERNO */}
               <div className="flex-grow overflow-y-auto p-6 space-y-8 scrollbar-hide">
-                
-                {/* Género */}
                 <div>
                   <label className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-gold mb-3 block">Género</label>
                   <select value={selectedGenre} onChange={(e) => setSelectedGenre(e.target.value)}
@@ -158,7 +156,6 @@ export default function BookGallery() {
                   </select>
                 </div>
 
-                {/* Idioma */}
                 <div>
                   <label className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-gold mb-3 block">Idioma</label>
                   <select value={selectedLanguage} onChange={(e) => setSelectedLanguage(e.target.value)}
@@ -169,7 +166,6 @@ export default function BookGallery() {
                   </select>
                 </div>
 
-                {/* Autor */}
                 <div>
                   <label className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-gold mb-3 block">Autor</label>
                   <select value={selectedAuthor} onChange={(e) => setSelectedAuthor(e.target.value)}
@@ -179,10 +175,8 @@ export default function BookGallery() {
                     {authors.map(a => <option key={a} value={a}>{a}</option>)}
                   </select>
                 </div>
-
               </div>
 
-              {/* PIE DEL PANEL FIJO CON BOTONES */}
               <div className="p-6 border-t border-brand-gold/5 shrink-0 space-y-3">
                 <button 
                   onClick={() => setShowFilterPanel(false)}
@@ -233,7 +227,7 @@ export default function BookGallery() {
               
               <div className="w-32 aspect-[5/8] mx-auto rounded-xl overflow-hidden shadow-lg mb-6 border border-brand-gold/20">
                 {newReleaseBook.cover_url ? (
-                  <img src={newReleaseBook.cover_url} alt={newReleaseBook.title} className="w-full h-full object-cover" />
+                  <img src={newReleaseBook.cover_url} alt={newReleaseBook.title} className={`w-full h-full object-cover ${!newReleaseBook.published ? 'opacity-[0.45]' : ''}`} />
                 ) : (
                   <div className="w-full h-full bg-brand-blue-bg flex items-center justify-center">
                     <BookOpen className="text-brand-dark/20" size={32} />

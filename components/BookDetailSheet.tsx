@@ -50,7 +50,8 @@ export default function BookDetailSheet({ book, onClose }: { book: any, onClose:
         <div className="relative w-[210px] h-[315px] shrink-0 mb-8 shadow-2xl rounded-md overflow-hidden">
           <img 
             src={book.cover_url} 
-            className={`w-full h-full object-cover transition-opacity duration-300 ${!book.published ? 'opacity-30' : ''}`} 
+            // AQUÍ REMOVIMOS LA CONDICIÓN DE OPACIDAD. AHORA SIEMPRE SE VERÁ AL 100%
+            className="w-full h-full object-cover transition-opacity duration-300" 
             alt={book.title} 
           />
         </div>
