@@ -16,7 +16,7 @@ jobs:
       - name: 2. Configurar Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22.x'
+          node-version: '22.0.0'
 
       - name: 3. Instalar dependencias de NPM
         run: npm install --legacy-peer-deps
