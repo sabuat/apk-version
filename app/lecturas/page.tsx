@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
-import { BookOpen, ChevronRight, Clock } from 'lucide-react';
+import { BookOpen, Clock } from 'lucide-react';
 import Link from 'next/link';
 
 export default function MisLecturasPage() {
@@ -13,7 +13,6 @@ export default function MisLecturasPage() {
     async function fetchMyReadings() {
       setLoading(true);
       try {
-        // 1. Identificamos qué usuario está usando la app
         const { data: { user } } = await supabase.auth.getUser();
         
         if (!user) {
@@ -21,7 +20,6 @@ export default function MisLecturasPage() {
           return;
         }
 
-        // 2. Buscamos el progreso de lectura SOLO de ese usuario
         const { data, error } = await supabase
           .from('reading_progress')
           .select(`
@@ -37,7 +35,7 @@ export default function MisLecturasPage() {
               chapters
             )
           `)
-          .eq('user_id', user.id) // <-- AQUÍ ESTÁ EL CANDADO DE SEGURIDAD
+          .eq('user_id', user.id) 
           .order('last_read_at', { ascending: false });
 
         if (error) throw error;
@@ -60,7 +58,8 @@ export default function MisLecturasPage() {
   return (
     <div className="min-h-[100dvh] bg-brand-bg px-6 pb-24 overflow-x-hidden">
       <header className="pt-10 pb-6 border-b border-brand-gold/10 mb-6">
-        <h1 className="text-3xl font-serif italic text-brand-dark">Mis Lecturas</h1>
+        {/* TÍTULO EN 1XL */}
+        <h1 className="text-xl font-serif italic text-brand-dark">Mis Lecturas</h1>
       </header>
 
       {readings.length === 0 ? (
@@ -72,11 +71,9 @@ export default function MisLecturasPage() {
       ) : (
         <div className="flex flex-col gap-4">
           {readings.map((item) => {
-            // Extraemos los datos del libro correctamente
             const book = Array.isArray(item.books) ? item.books[0] : item.books;
             if (!book) return null;
 
-            // Calculamos el porcentaje de lectura de forma segura
             const totalChapters = book.chapters || 1; 
             const completedCount = item.completed_chapters ? item.completed_chapters.length : 0;
             const progressPercent = Math.min(Math.round((completedCount / totalChapters) * 100), 100);
@@ -97,6 +94,7 @@ export default function MisLecturasPage() {
                   )}
                 </div>
                 
+                {/* Ahora este bloque ocupa todo el espacio sin que la flecha lo aplaste */}
                 <div className="flex flex-col justify-between py-1 flex-grow">
                   <div>
                     <h3 className="font-serif italic text-lg text-brand-dark leading-tight mb-1">{book.title}</h3>
@@ -116,10 +114,6 @@ export default function MisLecturasPage() {
                       <span className="text-gray-400">Cap. {item.chapter_number}</span>
                     </div>
                   </div>
-                </div>
-                
-                <div className="flex items-center text-brand-gold/30 px-1">
-                  <ChevronRight size={20} />
                 </div>
               </Link>
             );

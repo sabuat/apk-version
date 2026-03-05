@@ -73,7 +73,7 @@ export default function MiListaPage() {
   return (
     <div className="min-h-[100dvh] bg-brand-bg px-6 pb-24 overflow-x-hidden relative">
       <header className="pt-10 pb-6 border-b border-brand-gold/10 mb-6 flex justify-between items-end">
-        <h1 className="text-3xl font-serif italic text-brand-dark">Mi Lista</h1>
+        <h1 className="text-xl font-serif italic text-brand-dark">Mi Lista</h1>
         <button 
           onClick={() => setShowFilterPanel(true)}
           className={`relative p-3 rounded-full transition-colors ${hasActiveFilters ? 'bg-brand-dark-blue/10' : 'bg-transparent active:bg-brand-gold/5'}`}
