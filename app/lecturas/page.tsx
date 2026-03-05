@@ -83,12 +83,19 @@ export default function MisLecturasPage() {
                 key={item.book_id} 
                 className="flex gap-4 p-4 rounded-xl bg-white shadow-sm border border-brand-gold/10 active:scale-95 transition-transform"
               >
-                {/* CONTENEDOR DE LA PORTADA BLINDADO CONTRA APLASTAMIENTO */}
-                <div className="w-[4.5rem] min-w-[4.5rem] aspect-[5/8] shrink-0 rounded overflow-hidden bg-brand-blue-bg relative">
+                {/* AQUÍ ESTÁ LA MAGIA: 
+                  Usamos w-[4.5rem] y h-auto. 
+                  Esto obliga a la imagen a mostrarse al 100% de su ancho y calcular su altura real, sin recortar absolutamente nada.
+                */}
+                <div className="w-[4.5rem] min-w-[4.5rem] shrink-0 self-center">
                   {book.cover_url ? (
-                    <img src={book.cover_url} alt={book.title} className="absolute inset-0 w-full h-full object-cover" />
+                    <img 
+                      src={book.cover_url} 
+                      alt={book.title} 
+                      className="w-full h-auto rounded bg-brand-blue-bg shadow-sm" 
+                    />
                   ) : (
-                    <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-full aspect-[5/8] rounded bg-brand-blue-bg flex items-center justify-center shadow-sm">
                       <BookOpen className="text-brand-dark/20" size={16} />
                     </div>
                   )}

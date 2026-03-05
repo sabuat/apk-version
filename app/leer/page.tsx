@@ -227,33 +227,31 @@ function ReaderContent() {
       <article className="flex-grow px-6 max-w-2xl mx-auto w-full pt-4 pb-32">
         <header className="mb-14">
           
-          {/* ICONOS DE ACCIÓN ALINEADOS A LA IZQUIERDA */}
+          {/* ICONOS DE ACCIÓN ALINEADOS A LA IZQUIERDA - MOSTRADOS SIEMPRE */}
           <div className="flex justify-start items-center gap-3 mb-4">
             {/* Reproductor de voz circular */}
-            {speechSupported && (
-              !isSpeaking && !isPaused ? (
-                <button 
-                  onClick={handleSpeak} 
-                  className={`p-2.5 rounded-full active:scale-90 transition-transform ${nightMode ? 'bg-brand-gold/20 text-brand-gold' : 'bg-brand-dark-blue/10 text-brand-dark-blue'}`}
-                >
-                  <Volume2 size={18} />
-                </button>
-              ) : (
-                <div className={`flex items-center gap-1 p-1 rounded-full ${nightMode ? 'bg-brand-gold/20' : 'bg-brand-dark-blue/10'}`}>
-                  {isPaused ? (
-                    <button onClick={handleSpeak} className={`p-2 rounded-full active:scale-90 transition-transform ${nightMode ? 'text-brand-gold' : 'text-brand-dark-blue'}`}>
-                      <Play size={16} fill="currentColor" />
-                    </button>
-                  ) : (
-                    <button onClick={handlePause} className={`p-2 rounded-full active:scale-90 transition-transform ${nightMode ? 'text-brand-gold' : 'text-brand-dark-blue'}`}>
-                      <Pause size={16} fill="currentColor" />
-                    </button>
-                  )}
-                  <button onClick={handleStop} className="p-2 rounded-full text-brand-red active:scale-90 transition-transform">
-                    <Square size={16} fill="currentColor" />
+            {!isSpeaking && !isPaused ? (
+              <button 
+                onClick={handleSpeak} 
+                className={`p-2.5 rounded-full active:scale-90 transition-transform ${nightMode ? 'bg-brand-gold/20 text-brand-gold' : 'bg-brand-dark-blue/10 text-brand-dark-blue'}`}
+              >
+                <Volume2 size={18} />
+              </button>
+            ) : (
+              <div className={`flex items-center gap-1 p-1 rounded-full ${nightMode ? 'bg-brand-gold/20' : 'bg-brand-dark-blue/10'}`}>
+                {isPaused ? (
+                  <button onClick={handleSpeak} className={`p-2 rounded-full active:scale-90 transition-transform ${nightMode ? 'text-brand-gold' : 'text-brand-dark-blue'}`}>
+                    <Play size={16} fill="currentColor" />
                   </button>
-                </div>
-              )
+                ) : (
+                  <button onClick={handlePause} className={`p-2 rounded-full active:scale-90 transition-transform ${nightMode ? 'text-brand-gold' : 'text-brand-dark-blue'}`}>
+                    <Pause size={16} fill="currentColor" />
+                  </button>
+                )}
+                <button onClick={handleStop} className="p-2 rounded-full text-brand-red active:scale-90 transition-transform">
+                  <Square size={16} fill="currentColor" />
+                </button>
+              </div>
             )}
 
             {/* Menú de Capítulos */}
