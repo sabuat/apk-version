@@ -25,9 +25,23 @@ function ReaderContent() {
   const [sessionReads, setSessionReads] = useState(0);
   const [showAd, setShowAd] = useState(false);
 
-  // Estados para el reproductor de voz (Accesibilidad)
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
+  const [speechSupported, setSpeechSupported] = useState(false);
+
+  // Verificamos si el teléfono soporta el lector de voz de forma segura
+  useEffect(() => {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      setSpeechSupported(true);
+    }
+  }, []);
+
+  // Función segura para cancelar la voz sin colapsar la app
+  const safeCancelSpeech = () => {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
+  };
 
   useEffect(() => {
     const savedFontSize = localStorage.getItem('apapacho_fontSize');
@@ -75,24 +89,21 @@ function ReaderContent() {
     }
     loadData();
 
-    // Detener la voz si el usuario sale del lector de golpe
-    return () => {
-      window.speechSynthesis.cancel();
-    };
+    return () => safeCancelSpeech();
   }, [id, router]);
 
-  // Detener la voz cuando cambiamos de capítulo
   useEffect(() => {
-    window.speechSynthesis.cancel();
+    safeCancelSpeech();
     setIsSpeaking(false);
     setIsPaused(false);
   }, [currentIdx]);
 
-  // --- FUNCIONES DE ACCESIBILIDAD (VOZ) ---
   const handleSpeak = () => {
-    if (!chapters[currentIdx]?.content) return;
+    if (!speechSupported) return;
     
-    // Si estaba en pausa, solo reanudamos
+    const rawContent = chapters[currentIdx]?.content || '';
+    if (!rawContent) return; 
+    
     if (isPaused) {
       window.speechSynthesis.resume();
       setIsPaused(false);
@@ -100,13 +111,12 @@ function ReaderContent() {
       return;
     }
 
-    // Limpiamos el texto de códigos markdown (*, _, #) para que la voz no los lea
-    const cleanText = chapters[currentIdx].content.replace(/[*#_>]/g, '');
+    const cleanText = rawContent.replace(/[*#_>]/g, '');
     
-    window.speechSynthesis.cancel(); // Cancelamos cualquier voz previa por seguridad
+    safeCancelSpeech();
     const utterance = new SpeechSynthesisUtterance(cleanText);
-    utterance.lang = 'es-ES'; // Idioma por defecto. 
-    utterance.rate = 0.95; // Una velocidad ligeramente más relajada para lectura
+    utterance.lang = 'es-ES'; 
+    utterance.rate = 0.95; 
     
     utterance.onend = () => {
       setIsSpeaking(false);
@@ -119,17 +129,17 @@ function ReaderContent() {
   };
 
   const handlePause = () => {
+    if (!speechSupported) return;
     window.speechSynthesis.pause();
     setIsPaused(true);
     setIsSpeaking(false);
   };
 
   const handleStop = () => {
-    window.speechSynthesis.cancel();
+    safeCancelSpeech();
     setIsSpeaking(false);
     setIsPaused(false);
   };
-  // -----------------------------------------
 
   const handleNextChapter = async () => {
     if (currentIdx >= chapters.length - 1 || !userId || !id) return;
@@ -185,6 +195,8 @@ function ReaderContent() {
   );
 
   const currentChapter = chapters[currentIdx];
+  if (!currentChapter) return null;
+
   const hasNext = currentIdx < chapters.length - 1;
   const hasPrev = currentIdx > 0;
 
@@ -214,45 +226,48 @@ function ReaderContent() {
             {currentChapter.title}
           </h1>
 
-          {/* REPRODUCTOR DE VOZ (ACCESIBILIDAD) */}
-          <div className="flex justify-center items-center mt-8">
-            {!isSpeaking && !isPaused ? (
-              <button 
-                onClick={handleSpeak} 
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-full border text-[10px] uppercase font-bold tracking-widest active:scale-95 transition-all ${nightMode ? 'border-brand-gold text-brand-gold' : 'border-brand-dark-blue text-brand-dark-blue'}`}
-              >
-                <Volume2 size={16} /> Escuchar Capítulo
-              </button>
-            ) : (
-              <div className={`flex items-center gap-2 px-2 py-1.5 rounded-full border shadow-sm ${nightMode ? 'border-brand-gold/30 bg-brand-dark/50' : 'border-brand-dark-blue/20 bg-white'}`}>
-                {isPaused ? (
-                  <button onClick={handleSpeak} className={`p-2.5 rounded-full active:scale-90 transition-transform ${nightMode ? 'bg-brand-gold text-brand-dark' : 'bg-brand-dark-blue text-white'}`}>
-                    <Play size={14} fill="currentColor" />
-                  </button>
-                ) : (
-                  <button onClick={handlePause} className={`p-2.5 rounded-full active:scale-90 transition-transform ${nightMode ? 'bg-brand-gold text-brand-dark' : 'bg-brand-dark-blue text-white'}`}>
-                    <Pause size={14} fill="currentColor" />
-                  </button>
-                )}
-                <button onClick={handleStop} className="p-2.5 rounded-full text-brand-red active:scale-90 transition-transform">
-                  <Square size={14} fill="currentColor" />
+          {/* Ocultamos el botón si el teléfono no soporta la voz para evitar errores */}
+          {speechSupported && (
+            <div className="flex justify-center items-center mt-8">
+              {!isSpeaking && !isPaused ? (
+                <button 
+                  onClick={handleSpeak} 
+                  className={`flex items-center gap-2 px-5 py-2.5 rounded-full border text-[10px] uppercase font-bold tracking-widest active:scale-95 transition-all ${nightMode ? 'border-brand-gold text-brand-gold' : 'border-brand-dark-blue text-brand-dark-blue'}`}
+                >
+                  <Volume2 size={16} /> Escuchar Capítulo
                 </button>
-              </div>
-            )}
-          </div>
+              ) : (
+                <div className={`flex items-center gap-2 px-2 py-1.5 rounded-full border shadow-sm ${nightMode ? 'border-brand-gold/30 bg-brand-dark/50' : 'border-brand-dark-blue/20 bg-white'}`}>
+                  {isPaused ? (
+                    <button onClick={handleSpeak} className={`p-2.5 rounded-full active:scale-90 transition-transform ${nightMode ? 'bg-brand-gold text-brand-dark' : 'bg-brand-dark-blue text-white'}`}>
+                      <Play size={14} fill="currentColor" />
+                    </button>
+                  ) : (
+                    <button onClick={handlePause} className={`p-2.5 rounded-full active:scale-90 transition-transform ${nightMode ? 'bg-brand-gold text-brand-dark' : 'bg-brand-dark-blue text-white'}`}>
+                      <Pause size={14} fill="currentColor" />
+                    </button>
+                  )}
+                  <button onClick={handleStop} className="p-2.5 rounded-full text-brand-red active:scale-90 transition-transform">
+                    <Square size={14} fill="currentColor" />
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
 
           <div className="h-px bg-brand-gold/30 w-12 mx-auto mt-8" />
         </header>
 
-        <div className={`font-texto leading-[1.25] text-justify mb-20 transition-all duration-500 ${fontSize} ${nightMode ? 'text-[#D4AF37]/90' : 'text-brand-dark/90'}`}>
+        <div className={`font-texto leading-[2] text-justify mb-20 transition-all duration-500 ${fontSize} ${nightMode ? 'text-[#D4AF37]/90' : 'text-brand-dark/90'}`}>
           <ReactMarkdown
             components={{
-              p: ({node, ...props}) => <p className="mb-6 whitespace-pre-line" {...props} />,
-              strong: ({node, ...props}) => <strong className="font-bold text-brand-dark-blue dark:text-brand-gold" {...props} />,
-              em: ({node, ...props}) => <em className="italic" {...props} />
+              // Extraemos 'children' directamente para evitar que React intente dibujar propiedades inválidas en el DOM
+              p: ({ children }) => <p className="mb-6 whitespace-pre-line">{children}</p>,
+              strong: ({ children }) => <strong className="font-bold text-brand-dark-blue dark:text-brand-gold">{children}</strong>,
+              em: ({ children }) => <em className="italic">{children}</em>
             }}
           >
-            {currentChapter.content}
+            {currentChapter.content || ''}
           </ReactMarkdown>
         </div>
 
