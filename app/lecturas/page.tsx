@@ -50,22 +50,22 @@ export default function MisLecturasPage() {
   }, []);
 
   if (loading) return (
-    <div className="flex h-screen items-center justify-center bg-brand-bg">
+    <div className="flex h-screen items-center justify-center bg-brand-bg dark:bg-[#121212] transition-colors duration-500">
       <div className="w-8 h-8 border-4 border-brand-gold border-t-transparent rounded-full animate-spin" />
     </div>
   );
 
   return (
-    <div className="min-h-[100dvh] bg-brand-bg px-6 pb-24 overflow-x-hidden">
-      <header className="pt-10 pb-6 border-b border-brand-gold/10 mb-6">
-        <h1 className="text-xl font-serif italic text-brand-dark">Mis Lecturas</h1>
+    <div className="min-h-[100dvh] bg-brand-bg dark:bg-[#121212] transition-colors duration-500 px-6 pb-24 overflow-x-hidden">
+      <header className="pt-10 pb-6 border-b border-brand-gold/10 dark:border-brand-gold/20 mb-6 transition-colors">
+        <h1 className="text-xl font-serif italic text-brand-dark dark:text-brand-gold transition-colors">Mis Lecturas</h1>
       </header>
 
       {readings.length === 0 ? (
         <div className="text-center py-20">
-          <Clock className="mx-auto text-brand-dark/20 mb-4" size={32} />
-          <p className="text-xs font-bold uppercase tracking-widest text-brand-dark/40 mb-2">Aún no hay lecturas</p>
-          <p className="text-[10px] text-brand-dark/30">Los libros que comiences a leer aparecerán aquí.</p>
+          <Clock className="mx-auto text-brand-dark/20 dark:text-gray-600 mb-4 transition-colors" size={32} />
+          <p className="text-xs font-bold uppercase tracking-widest text-brand-dark/40 dark:text-gray-400 mb-2 transition-colors">Aún no hay lecturas</p>
+          <p className="text-[10px] text-brand-dark/30 dark:text-gray-500 transition-colors">Los libros que comiences a leer aparecerán aquí.</p>
         </div>
       ) : (
         <div className="flex flex-col gap-4">
@@ -81,43 +81,39 @@ export default function MisLecturasPage() {
               <Link 
                 href={`/leer?id=${book.id}`}
                 key={item.book_id} 
-                className="flex gap-4 p-4 rounded-xl bg-white shadow-sm border border-brand-gold/10 active:scale-95 transition-transform"
+                className="flex gap-4 p-4 rounded-xl bg-white dark:bg-[#1A1A1A] shadow-sm border border-brand-gold/10 dark:border-brand-gold/5 active:scale-95 transition-all duration-500"
               >
-                {/* AQUÍ ESTÁ LA MAGIA: 
-                  Usamos w-[4.5rem] y h-auto. 
-                  Esto obliga a la imagen a mostrarse al 100% de su ancho y calcular su altura real, sin recortar absolutamente nada.
-                */}
                 <div className="w-[4.5rem] min-w-[4.5rem] shrink-0 self-center">
                   {book.cover_url ? (
                     <img 
                       src={book.cover_url} 
                       alt={book.title} 
-                      className="w-full h-auto rounded bg-brand-blue-bg shadow-sm" 
+                      className="w-full h-auto rounded bg-brand-blue-bg dark:bg-black/50 shadow-sm" 
                     />
                   ) : (
-                    <div className="w-full aspect-[5/8] rounded bg-brand-blue-bg flex items-center justify-center shadow-sm">
-                      <BookOpen className="text-brand-dark/20" size={16} />
+                    <div className="w-full aspect-[5/8] rounded bg-brand-blue-bg dark:bg-black/50 flex items-center justify-center shadow-sm">
+                      <BookOpen className="text-brand-dark/20 dark:text-gray-500" size={16} />
                     </div>
                   )}
                 </div>
                 
                 <div className="flex flex-col justify-between py-1 flex-grow">
                   <div>
-                    <h3 className="font-serif italic text-lg text-brand-dark leading-tight mb-1 line-clamp-2">{book.title}</h3>
+                    <h3 className="font-serif italic text-lg text-brand-dark dark:text-gray-200 leading-tight mb-1 line-clamp-2 transition-colors">{book.title}</h3>
                     <p className="text-[10px] font-bold uppercase tracking-widest text-brand-gold">{book.author}</p>
                   </div>
 
                   <div className="space-y-3 mt-2">
-                    <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                    <div className="w-full h-1.5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden transition-colors">
                       <div 
-                        className="h-full bg-brand-dark-blue transition-all duration-700 ease-out" 
+                        className="h-full bg-brand-dark-blue dark:bg-brand-gold transition-all duration-700 ease-out" 
                         style={{ width: `${progressPercent}%` }} 
                       />
                     </div>
                     
                     <div className="flex justify-between items-center text-[10px] font-bold uppercase">
-                      <span className="text-brand-dark-blue">{progressPercent}% Leído</span>
-                      <span className="text-gray-400">Cap. {item.chapter_number}</span>
+                      <span className="text-brand-dark-blue dark:text-brand-gold transition-colors">{progressPercent}% Leído</span>
+                      <span className="text-gray-400 dark:text-gray-500 transition-colors">Cap. {item.chapter_number}</span>
                     </div>
                   </div>
                 </div>

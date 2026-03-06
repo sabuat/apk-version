@@ -19,7 +19,6 @@ const AVATARS = [
 export default function AuthPage() {
   const router = useRouter();
   
-  // ESTADO NUEVO: Controla la pantalla de carga inicial para evitar el parpadeo
   const [isCheckingSession, setIsCheckingSession] = useState(true);
 
   const [view, setView] = useState<'login' | 'register' | 'complete_profile'>('login');
@@ -58,7 +57,7 @@ export default function AuthPage() {
         if (profile) {
           const lastRoute = localStorage.getItem('apapacho_last_route') || '/home';
           router.push(lastRoute);
-          return; // Detenemos la ejecución aquí para que se quede cargando mientras cambia de ruta
+          return; 
         } else {
           setAuthUserId(session.user.id);
           setRegEmail(session.user.email || '');
@@ -68,7 +67,7 @@ export default function AuthPage() {
       }
       
       if (isMounted) {
-        setIsCheckingSession(false); // Solo mostramos el login si comprobamos que NO hay sesión
+        setIsCheckingSession(false); 
       }
     };
 
@@ -76,7 +75,7 @@ export default function AuthPage() {
 
     const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
       if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session?.user && isMounted) {
-        setIsCheckingSession(true); // Ocultamos el form si detecta un nuevo login
+        setIsCheckingSession(true); 
         checkCurrentSession();
       }
     });
@@ -185,10 +184,9 @@ export default function AuthPage() {
     }
   };
 
-  // PANTALLA DE CARGA INICIAL (Evita el parpadeo del login)
   if (isCheckingSession) {
     return (
-      <div className="min-h-[100dvh] bg-[#F9F9F7] flex flex-col items-center justify-center p-6">
+      <div className="min-h-[100dvh] bg-[#F9F9F7] dark:bg-[#121212] flex flex-col items-center justify-center p-6 transition-colors duration-500">
         <motion.img 
           initial={{ opacity: 0.5, scale: 0.95 }} 
           animate={{ opacity: 1, scale: 1 }} 
@@ -202,7 +200,7 @@ export default function AuthPage() {
 
   return (
     <div 
-      className="min-h-[100dvh] bg-[#F9F9F7] flex flex-col items-center overflow-y-auto px-6"
+      className="min-h-[100dvh] bg-[#F9F9F7] dark:bg-[#121212] flex flex-col items-center overflow-y-auto px-6 transition-colors duration-500"
       style={{ 
         paddingTop: 'calc(2rem + env(safe-area-inset-top))',
         paddingBottom: 'calc(2rem + env(safe-area-inset-bottom))'
@@ -214,19 +212,19 @@ export default function AuthPage() {
         className="w-48 object-contain mb-8 drop-shadow-sm shrink-0" 
       />
 
-      <div className="w-full max-w-md bg-white p-8 rounded-[2rem] shadow-xl border border-brand-gold/10 mb-4">
+      <div className="w-full max-w-md bg-white dark:bg-[#1A1A1A] p-8 rounded-[2rem] shadow-xl border border-brand-gold/10 dark:border-brand-gold/20 mb-4 transition-colors duration-500">
         
         {view !== 'complete_profile' && (
-          <div className="flex bg-gray-100 rounded-full p-1 mb-8">
+          <div className="flex bg-gray-100 dark:bg-black/40 rounded-full p-1 mb-8 transition-colors">
             <button 
               type="button" onClick={() => { setView('login'); setErrorMsg(''); }}
-              className={`flex-1 py-2 rounded-full text-[11px] font-bold uppercase tracking-widest transition-all ${view === 'login' ? 'bg-white text-brand-dark shadow-sm' : 'text-gray-400'}`}
+              className={`flex-1 py-2 rounded-full text-[11px] font-bold uppercase tracking-widest transition-all ${view === 'login' ? 'bg-white dark:bg-[#2A2A2A] text-brand-dark dark:text-brand-gold shadow-sm' : 'text-gray-400 dark:text-gray-500'}`}
             >
               Iniciar Sesión
             </button>
             <button 
               type="button" onClick={() => { setView('register'); setErrorMsg(''); }}
-              className={`flex-1 py-2 rounded-full text-[11px] font-bold uppercase tracking-widest transition-all ${view === 'register' ? 'bg-white text-brand-dark shadow-sm' : 'text-gray-400'}`}
+              className={`flex-1 py-2 rounded-full text-[11px] font-bold uppercase tracking-widest transition-all ${view === 'register' ? 'bg-white dark:bg-[#2A2A2A] text-brand-dark dark:text-brand-gold shadow-sm' : 'text-gray-400 dark:text-gray-500'}`}
             >
               Crear Cuenta
             </button>
@@ -235,7 +233,7 @@ export default function AuthPage() {
 
         {view === 'complete_profile' && (
           <div className="text-center mb-6">
-            <h2 className="text-2xl font-serif italic text-brand-dark mb-2">¡Casi listo!</h2>
+            <h2 className="text-2xl font-serif italic text-brand-dark dark:text-gray-200 mb-2 transition-colors">¡Casi listo!</h2>
             <p className="text-[11px] font-bold uppercase tracking-widest text-brand-gold">
               Solo necesitamos unos datos más para tu cuenta de Google.
             </p>
@@ -243,7 +241,7 @@ export default function AuthPage() {
         )}
 
         {errorMsg && (
-          <div className="bg-red-50 text-red-500 text-[11px] p-3 rounded-xl mb-6 font-bold uppercase tracking-widest text-center border border-red-100">
+          <div className="bg-red-50 dark:bg-red-900/20 text-red-500 dark:text-red-400 text-[11px] p-3 rounded-xl mb-6 font-bold uppercase tracking-widest text-center border border-red-100 dark:border-red-900/50 transition-colors">
             {errorMsg}
           </div>
         )}
@@ -251,19 +249,19 @@ export default function AuthPage() {
         {view === 'login' && (
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="relative">
-              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" size={18} />
               <input 
                 type="email" placeholder="Correo Electrónico" required
                 value={loginEmail} onChange={(e) => setLoginEmail(e.target.value)}
-                className="w-full bg-gray-50 border border-gray-100 rounded-2xl py-4 pl-12 pr-4 text-sm focus:outline-none focus:border-brand-gold transition-colors text-brand-dark"
+                className="w-full bg-gray-50 dark:bg-black/30 border border-gray-100 dark:border-white/5 rounded-2xl py-4 pl-12 pr-4 text-sm focus:outline-none focus:border-brand-gold transition-colors text-brand-dark dark:text-gray-200"
               />
             </div>
             <div className="relative">
-              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" size={18} />
               <input 
                 type="password" placeholder="Contraseña" required
                 value={loginPassword} onChange={(e) => setLoginPassword(e.target.value)}
-                className="w-full bg-gray-50 border border-gray-100 rounded-2xl py-4 pl-12 pr-4 text-sm focus:outline-none focus:border-brand-gold transition-colors text-brand-dark"
+                className="w-full bg-gray-50 dark:bg-black/30 border border-gray-100 dark:border-white/5 rounded-2xl py-4 pl-12 pr-4 text-sm focus:outline-none focus:border-brand-gold transition-colors text-brand-dark dark:text-gray-200"
               />
             </div>
             <button disabled={loading} className="w-full bg-brand-gold text-white py-4 rounded-2xl font-bold text-[12px] uppercase tracking-widest shadow-lg shadow-brand-gold/20 active:scale-95 transition-all mt-6">
@@ -285,7 +283,7 @@ export default function AuthPage() {
             <Input placeholder="Correo Electrónico" type="email" value={regEmail} onChange={setRegEmail} />
             <Input placeholder="Contraseña" type="password" value={regPassword} onChange={setRegPassword} />
             <Input placeholder="Confirmar Contraseña" type="password" value={confirmPassword} onChange={setConfirmPassword} />
-            <button disabled={loading} className="w-full bg-brand-dark-blue text-white py-4 rounded-2xl font-bold text-[12px] uppercase tracking-widest shadow-lg shadow-brand-dark-blue/20 active:scale-95 transition-all mt-4">
+            <button disabled={loading} className="w-full bg-brand-dark-blue dark:bg-brand-gold text-white dark:text-brand-dark py-4 rounded-2xl font-bold text-[12px] uppercase tracking-widest shadow-lg shadow-brand-dark-blue/20 active:scale-95 transition-all mt-4">
               {loading ? 'Creando...' : 'Crear Cuenta'}
             </button>
             <DividerGoogle onClick={handleGoogleLogin} />
@@ -296,9 +294,9 @@ export default function AuthPage() {
           <form onSubmit={handleCompleteProfile} className="space-y-4">
             <AvatarSelector selected={selectedAvatar} onSelect={() => setShowAvatarModal(true)} />
             
-            <div className="bg-gray-50 p-4 rounded-xl border border-gray-100 mb-4 opacity-70">
+            <div className="bg-gray-50 dark:bg-black/30 p-4 rounded-xl border border-gray-100 dark:border-white/5 mb-4 opacity-70 transition-colors">
               <p className="text-[10px] uppercase font-bold text-gray-400 tracking-widest mb-1">Vinculado con Google</p>
-              <p className="text-sm font-bold text-brand-dark">{fullName}</p>
+              <p className="text-sm font-bold text-brand-dark dark:text-gray-200">{fullName}</p>
               <p className="text-sm text-gray-500">{regEmail}</p>
             </div>
 
@@ -320,18 +318,18 @@ export default function AuthPage() {
           <motion.div 
             initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }} 
             transition={{ type: 'spring', damping: 25, stiffness: 200 }} 
-            className="fixed inset-0 z-50 bg-[#F9F9F7] flex flex-col p-6"
+            className="fixed inset-0 z-50 bg-[#F9F9F7] dark:bg-[#121212] flex flex-col p-6 transition-colors duration-500"
             style={{ paddingTop: 'env(safe-area-inset-top)', paddingBottom: 'env(safe-area-inset-bottom)' }}
           >
             <div className="flex justify-between items-center mb-8 mt-6">
-              <h2 className="text-2xl font-serif italic text-brand-dark">Elige tu Avatar</h2>
-              <button type="button" onClick={() => setShowAvatarModal(false)} className="p-2 active:scale-90 bg-white rounded-full shadow-sm"><X size={24} className="text-brand-dark" /></button>
+              <h2 className="text-2xl font-serif italic text-brand-dark dark:text-brand-gold transition-colors">Elige tu Avatar</h2>
+              <button type="button" onClick={() => setShowAvatarModal(false)} className="p-2 active:scale-90 bg-white dark:bg-black/40 rounded-full shadow-sm"><X size={24} className="text-brand-dark dark:text-gray-300 transition-colors" /></button>
             </div>
             <div className="grid grid-cols-2 gap-4 overflow-y-auto pb-10">
               {AVATARS.map((av) => (
                 <div key={av} onClick={() => { setSelectedAvatar(av); setShowAvatarModal(false); }} className={`relative aspect-square rounded-2xl overflow-hidden cursor-pointer shadow-sm transition-transform active:scale-95 ${selectedAvatar === av ? 'border-4 border-brand-gold' : 'border-2 border-transparent'}`}>
-                  <img src={av} alt="Avatar option" className="w-full h-full object-cover bg-brand-blue-bg" />
-                  {selectedAvatar === av && <div className="absolute inset-0 bg-black/20 flex items-center justify-center"><Check className="text-white drop-shadow-md" size={32} /></div>}
+                  <img src={av} alt="Avatar option" className="w-full h-full object-cover bg-brand-blue-bg dark:bg-black/50" />
+                  {selectedAvatar === av && <div className="absolute inset-0 bg-black/40 flex items-center justify-center"><Check className="text-white drop-shadow-md" size={32} /></div>}
                 </div>
               ))}
             </div>
@@ -345,8 +343,8 @@ export default function AuthPage() {
 function AvatarSelector({ selected, onSelect }: { selected: string, onSelect: () => void }) {
   return (
     <div className="flex flex-col items-center mb-6">
-      <div className="relative w-24 h-24 rounded-full shadow-inner border-2 border-dashed border-gray-300 bg-gray-50 flex items-center justify-center overflow-hidden mb-3">
-        {selected ? <img src={selected} alt="Avatar" className="w-full h-full object-cover" /> : <User size={32} className="text-gray-300" />}
+      <div className="relative w-24 h-24 rounded-full shadow-inner border-2 border-dashed border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-black/30 flex items-center justify-center overflow-hidden mb-3 transition-colors">
+        {selected ? <img src={selected} alt="Avatar" className="w-full h-full object-cover" /> : <User size={32} className="text-gray-300 dark:text-gray-600" />}
       </div>
       <button type="button" onClick={onSelect} className="text-[10px] font-bold uppercase tracking-widest text-brand-gold bg-brand-gold/10 px-4 py-2 rounded-full active:scale-95 transition-transform">
         {selected ? 'Cambiar Avatar' : 'Elegir Avatar'}
@@ -358,7 +356,7 @@ function AvatarSelector({ selected, onSelect }: { selected: string, onSelect: ()
 function Input({ placeholder, type = "text", value, onChange }: any) {
   return (
     <input type={type} placeholder={placeholder} required value={value} onChange={(e) => onChange(e.target.value)}
-      className="w-full bg-gray-50 border border-gray-100 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-brand-gold transition-colors text-brand-dark"
+      className="w-full bg-gray-50 dark:bg-black/30 border border-gray-100 dark:border-white/5 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-brand-gold transition-colors text-brand-dark dark:text-gray-200"
     />
   );
 }
@@ -367,13 +365,13 @@ function DateInput({ value, onChange }: any) {
   return (
     <div className="relative">
       {!value && (
-        <label className="absolute left-4 top-1/2 -translate-y-1/2 text-[10px] uppercase font-bold text-gray-400 tracking-widest pointer-events-none">
+        <label className="absolute left-4 top-1/2 -translate-y-1/2 text-[10px] uppercase font-bold text-gray-400 dark:text-gray-500 tracking-widest pointer-events-none transition-colors">
           Nacimiento
         </label>
       )}
       <input type="date" required value={value} onChange={(e) => onChange(e.target.value)}
-        className={`w-full bg-gray-50 border border-gray-100 rounded-xl py-3 pr-4 text-sm focus:outline-none focus:border-brand-gold transition-colors text-brand-dark ${
-          !value ? 'pl-[100px] text-transparent' : 'pl-4 text-brand-dark'
+        className={`w-full bg-gray-50 dark:bg-black/30 border border-gray-100 dark:border-white/5 rounded-xl py-3 pr-4 text-sm focus:outline-none focus:border-brand-gold transition-colors ${
+          !value ? 'pl-[100px] text-transparent' : 'pl-4 text-brand-dark dark:text-gray-200'
         }`}
       />
     </div>
@@ -384,11 +382,11 @@ function DividerGoogle({ onClick }: { onClick: () => void }) {
   return (
     <>
       <div className="relative flex items-center py-4">
-        <div className="flex-grow border-t border-gray-200"></div>
-        <span className="flex-shrink-0 mx-4 text-gray-400 text-[10px] uppercase tracking-widest font-bold">O continúa con</span>
-        <div className="flex-grow border-t border-gray-200"></div>
+        <div className="flex-grow border-t border-gray-200 dark:border-white/10 transition-colors"></div>
+        <span className="flex-shrink-0 mx-4 text-gray-400 dark:text-gray-500 text-[10px] uppercase tracking-widest font-bold transition-colors">O continúa con</span>
+        <div className="flex-grow border-t border-gray-200 dark:border-white/10 transition-colors"></div>
       </div>
-      <button type="button" onClick={onClick} className="w-full flex items-center justify-center gap-3 bg-white border-2 border-gray-100 text-brand-dark py-4 rounded-2xl font-bold text-[12px] uppercase tracking-widest active:scale-90 transition-all">
+      <button type="button" onClick={onClick} className="w-full flex items-center justify-center gap-3 bg-white dark:bg-[#1A1A1A] border-2 border-gray-100 dark:border-white/5 text-brand-dark dark:text-gray-200 py-4 rounded-2xl font-bold text-[12px] uppercase tracking-widest active:scale-90 transition-all">
         <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className="w-5 h-5" /> Google
       </button>
     </>
@@ -435,7 +433,7 @@ function SelectCountry({ value, onChange }: { value: string, onChange: (val: str
       required 
       value={value} 
       onChange={(e) => onChange(e.target.value)}
-      className={`w-full bg-gray-50 border border-gray-100 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-brand-gold transition-colors appearance-none ${!value ? 'text-gray-400' : 'text-brand-dark'}`}
+      className={`w-full bg-gray-50 dark:bg-black/30 border border-gray-100 dark:border-white/5 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-brand-gold transition-colors appearance-none ${!value ? 'text-gray-400 dark:text-gray-500' : 'text-brand-dark dark:text-gray-200'}`}
     >
       <option value="" disabled hidden>Selecciona tu país</option>
       {countries.map(c => (

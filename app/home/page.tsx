@@ -68,24 +68,25 @@ export default function BookGallery() {
 
   if (loading) {
     return (
-      <div className="p-20 text-center font-bold text-[11px] uppercase tracking-widest text-brand-gold">
+      <div className="p-20 text-center font-bold text-[11px] uppercase tracking-widest text-brand-gold bg-brand-bg dark:bg-[#121212] min-h-[100dvh] transition-colors duration-500">
         Cargando...
       </div>
     );
   }
 
   return (
-    <div className="w-full px-6 pt-6 pb-20 overflow-x-hidden relative">
+    // AQUÍ ESTÁ LA CORRECCIÓN: Agregamos bg-brand-bg dark:bg-[#121212] transition-colors duration-500 min-h-[100dvh]
+    <div className="w-full px-6 pt-6 pb-20 overflow-x-hidden relative bg-brand-bg dark:bg-[#121212] min-h-[100dvh] transition-colors duration-500">
       
       {/* HEADER CON BOTÓN DE FILTRO REDISEÑADO */}
       <div className="flex justify-between items-center mb-6">
         <button 
           onClick={() => setShowFilterPanel(true)}
-          className={`relative p-3 rounded-full transition-colors ${hasActiveFilters ? 'bg-brand-dark-blue/10' : 'bg-transparent active:bg-brand-gold/5'}`}
+          className={`relative p-3 rounded-full transition-colors ${hasActiveFilters ? 'bg-brand-dark-blue/10 dark:bg-brand-gold/20' : 'bg-transparent active:bg-brand-gold/5'}`}
         >
-          <Filter size={22} className="text-brand-dark-blue" />
+          <Filter size={22} className="text-brand-dark-blue dark:text-brand-gold transition-colors" />
           {hasActiveFilters && (
-            <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-brand-gold rounded-full border-2 border-brand-bg"></span>
+            <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-brand-gold rounded-full border-2 border-brand-bg dark:border-[#121212]"></span>
           )}
         </button>
       </div>
@@ -97,7 +98,7 @@ export default function BookGallery() {
             <div
               key={book.id}
               onClick={() => setSelectedBook(book)}
-              className="relative aspect-[5/8] w-full bg-[#f2f2f2] rounded-md overflow-hidden shadow-lg active:scale-95 transition-transform cursor-pointer border border-brand-gold/5 block group"
+              className="relative aspect-[5/8] w-full bg-[#f2f2f2] dark:bg-[#1A1A1A] rounded-md overflow-hidden shadow-lg active:scale-95 transition-all duration-500 cursor-pointer border border-brand-gold/5 dark:border-brand-gold/10 block group"
             >
               {book.cover_url ? (
                 <img 
@@ -106,8 +107,8 @@ export default function BookGallery() {
                   className={`w-full h-full object-cover ${!book.published ? 'opacity-[0.45]' : ''}`} 
                 />
               ) : (
-                <div className="w-full h-full bg-brand-blue-bg flex items-center justify-center">
-                  <BookOpen className="text-brand-dark/20" size={24} />
+                <div className="w-full h-full bg-brand-blue-bg dark:bg-black/50 flex items-center justify-center transition-colors">
+                  <BookOpen className="text-brand-dark/20 dark:text-gray-600" size={24} />
                 </div>
               )}
             </div>
@@ -115,8 +116,8 @@ export default function BookGallery() {
         </div>
       ) : (
         <div className="text-center py-20">
-          <p className="text-xs font-bold uppercase tracking-widest text-brand-dark/40 mb-2">No hay resultados</p>
-          <p className="text-[10px] text-brand-dark/30">Intenta cambiar los filtros seleccionados.</p>
+          <p className="text-xs font-bold uppercase tracking-widest text-brand-dark/40 dark:text-gray-400 mb-2 transition-colors">No hay resultados</p>
+          <p className="text-[10px] text-brand-dark/30 dark:text-gray-500 transition-colors">Intenta cambiar los filtros seleccionados.</p>
         </div>
       )}
 
@@ -128,19 +129,19 @@ export default function BookGallery() {
           <motion.div 
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} 
             onClick={() => setShowFilterPanel(false)} // Cierra al tocar el overlay
-            className="fixed inset-0 z-[70] bg-black/40 backdrop-blur-sm"
+            className="fixed inset-0 z-[70] bg-black/40 dark:bg-black/70 backdrop-blur-sm transition-colors"
           >
             <motion.div 
               initial={{ x: '100%' }} animate={{ x: '0%' }} exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
               onClick={(e) => e.stopPropagation()} // Evita cerrar al tocar dentro
-              className="absolute inset-y-0 right-0 w-[85%] max-w-sm bg-brand-bg shadow-2xl flex flex-col border-l border-brand-gold/10"
+              className="absolute inset-y-0 right-0 w-[85%] max-w-sm bg-brand-bg dark:bg-[#121212] transition-colors duration-500 shadow-2xl flex flex-col border-l border-brand-gold/10 dark:border-brand-gold/20"
               style={{ paddingTop: 'env(safe-area-inset-top)', paddingBottom: 'env(safe-area-inset-bottom)' }}
             >
-              <div className="p-6 flex justify-between items-center border-b border-brand-gold/5 shrink-0">
-                <h2 className="text-2xl font-serif italic text-brand-dark-blue">Filtros</h2>
+              <div className="p-6 flex justify-between items-center border-b border-brand-gold/5 dark:border-brand-gold/10 shrink-0 transition-colors">
+                <h2 className="text-2xl font-serif italic text-brand-dark-blue dark:text-brand-gold transition-colors">Filtros</h2>
                 <button onClick={() => setShowFilterPanel(false)} className="p-2 active:scale-90 transition-transform">
-                  <X size={26} className="text-brand-dark-blue" />
+                  <X size={26} className="text-brand-dark-blue dark:text-gray-300 transition-colors" />
                 </button>
               </div>
 
@@ -148,7 +149,7 @@ export default function BookGallery() {
                 <div>
                   <label className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-gold mb-3 block">Género</label>
                   <select value={selectedGenre} onChange={(e) => setSelectedGenre(e.target.value)}
-                    className="w-full bg-white border border-brand-gold/20 text-brand-dark-blue text-xs font-bold uppercase tracking-widest rounded-full px-5 py-3.5 outline-none focus:border-brand-dark-blue transition-colors appearance-none shadow-sm"
+                    className="w-full bg-white dark:bg-[#1A1A1A] border border-brand-gold/20 dark:border-brand-gold/30 text-brand-dark-blue dark:text-gray-200 text-xs font-bold uppercase tracking-widest rounded-full px-5 py-3.5 outline-none focus:border-brand-dark-blue dark:focus:border-brand-gold transition-colors appearance-none shadow-sm"
                   >
                     <option value="">Todos los géneros</option>
                     {GENRES.map(g => <option key={g} value={g}>{g}</option>)}
@@ -158,7 +159,7 @@ export default function BookGallery() {
                 <div>
                   <label className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-gold mb-3 block">Idioma</label>
                   <select value={selectedLanguage} onChange={(e) => setSelectedLanguage(e.target.value)}
-                    className="w-full bg-white border border-brand-gold/20 text-brand-dark-blue text-xs font-bold uppercase tracking-widest rounded-full px-5 py-3.5 outline-none focus:border-brand-dark-blue transition-colors appearance-none shadow-sm"
+                    className="w-full bg-white dark:bg-[#1A1A1A] border border-brand-gold/20 dark:border-brand-gold/30 text-brand-dark-blue dark:text-gray-200 text-xs font-bold uppercase tracking-widest rounded-full px-5 py-3.5 outline-none focus:border-brand-dark-blue dark:focus:border-brand-gold transition-colors appearance-none shadow-sm"
                   >
                     <option value="">Todos los idiomas</option>
                     {LANGUAGES.map(l => <option key={l} value={l}>{l}</option>)}
@@ -168,7 +169,7 @@ export default function BookGallery() {
                 <div>
                   <label className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-gold mb-3 block">Autor</label>
                   <select value={selectedAuthor} onChange={(e) => setSelectedAuthor(e.target.value)}
-                    className="w-full bg-white border border-brand-gold/20 text-brand-dark-blue text-xs font-bold uppercase tracking-widest rounded-full px-5 py-3.5 outline-none focus:border-brand-dark-blue transition-colors appearance-none shadow-sm"
+                    className="w-full bg-white dark:bg-[#1A1A1A] border border-brand-gold/20 dark:border-brand-gold/30 text-brand-dark-blue dark:text-gray-200 text-xs font-bold uppercase tracking-widest rounded-full px-5 py-3.5 outline-none focus:border-brand-dark-blue dark:focus:border-brand-gold transition-colors appearance-none shadow-sm"
                   >
                     <option value="">Todos los autores</option>
                     {authors.map(a => <option key={a} value={a}>{a}</option>)}
@@ -176,10 +177,10 @@ export default function BookGallery() {
                 </div>
               </div>
 
-              <div className="p-6 border-t border-brand-gold/5 shrink-0 space-y-3">
+              <div className="p-6 border-t border-brand-gold/5 dark:border-brand-gold/10 shrink-0 space-y-3 transition-colors">
                 <button 
                   onClick={() => setShowFilterPanel(false)}
-                  className="w-full bg-brand-dark-blue text-white py-4 rounded-full font-bold text-[11px] uppercase tracking-widest active:scale-95 transition-all shadow-lg shadow-brand-dark-blue/20"
+                  className="w-full bg-brand-dark-blue dark:bg-brand-gold text-white dark:text-[#121212] py-4 rounded-full font-bold text-[11px] uppercase tracking-widest active:scale-95 transition-all shadow-lg shadow-brand-dark-blue/20 dark:shadow-brand-gold/10"
                 >
                   Aplicar Filtros
                 </button>
@@ -190,7 +191,7 @@ export default function BookGallery() {
                       setSelectedLanguage('');
                       setSelectedAuthor('');
                     }}
-                    className="w-full flex items-center justify-center gap-2.5 bg-red-50 text-brand-red border border-red-100 py-4 rounded-full font-bold text-[11px] uppercase tracking-widest active:scale-95 transition-all shadow-sm"
+                    className="w-full flex items-center justify-center gap-2.5 bg-red-50 dark:bg-red-900/20 text-brand-red dark:text-red-400 border border-red-100 dark:border-red-900/50 py-4 rounded-full font-bold text-[11px] uppercase tracking-widest active:scale-95 transition-all shadow-sm"
                   >
                     <FilterX size={16} /> Limpiar Filtros
                   </button>
@@ -214,28 +215,28 @@ export default function BookGallery() {
             initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 50 }}
             className="fixed inset-0 z-50 bg-black/90 flex flex-col items-center justify-center p-6 backdrop-blur-sm"
           >
-            <div className="bg-white rounded-[2rem] p-6 max-w-sm w-full text-center shadow-2xl relative">
-              <button onClick={() => setShowNewModal(false)} className="absolute top-4 right-4 p-1.5 active:scale-90 bg-gray-100 rounded-full">
-                <X size={16} className="text-gray-500" />
+            <div className="bg-white dark:bg-[#1A1A1A] transition-colors duration-500 rounded-[2rem] p-6 max-w-sm w-full text-center shadow-2xl relative">
+              <button onClick={() => setShowNewModal(false)} className="absolute top-4 right-4 p-1.5 active:scale-90 bg-gray-100 dark:bg-white/10 rounded-full transition-colors">
+                <X size={16} className="text-gray-500 dark:text-gray-300" />
               </button>
 
               <div className="mt-2 mb-6 text-center">
                 <span className="text-[10px] uppercase tracking-[0.3em] text-brand-gold font-black mb-1 block">¡Novedad Editorial!</span>
-                <span className="text-[9px] uppercase tracking-[0.2em] text-gray-400 font-bold block">Recién llegado a la librería</span>
+                <span className="text-[9px] uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500 font-bold block transition-colors">Recién llegado a la librería</span>
               </div>
               
-              <div className="w-32 aspect-[5/8] mx-auto rounded-xl overflow-hidden shadow-lg mb-6 border border-brand-gold/20">
+              <div className="w-32 aspect-[5/8] mx-auto rounded-xl overflow-hidden shadow-lg mb-6 border border-brand-gold/20 dark:border-brand-gold/30 transition-colors">
                 {newReleaseBook.cover_url ? (
                   <img src={newReleaseBook.cover_url} alt={newReleaseBook.title} className={`w-full h-full object-cover ${!newReleaseBook.published ? 'opacity-[0.45]' : ''}`} />
                 ) : (
-                  <div className="w-full h-full bg-brand-blue-bg flex items-center justify-center">
-                    <BookOpen className="text-brand-dark/20" size={32} />
+                  <div className="w-full h-full bg-brand-blue-bg dark:bg-black/50 flex items-center justify-center transition-colors">
+                    <BookOpen className="text-brand-dark/20 dark:text-gray-600" size={32} />
                   </div>
                 )}
               </div>
 
-              <p className="text-sm font-texto text-brand-dark/80 mb-8 leading-relaxed px-2">
-                Descubre el nuevo libro de <strong className="text-brand-dark font-bold">{newReleaseBook.author}</strong> en Apapacho Reader. ¡No te pierdas <strong className="font-serif italic text-brand-gold text-base">{newReleaseBook.title}</strong>!
+              <p className="text-sm font-texto text-brand-dark/80 dark:text-gray-300 mb-8 leading-relaxed px-2 transition-colors">
+                Descubre el nuevo libro de <strong className="text-brand-dark dark:text-white font-bold transition-colors">{newReleaseBook.author}</strong> en Apapacho Reader. ¡No te pierdas <strong className="font-serif italic text-brand-gold text-base">{newReleaseBook.title}</strong>!
               </p>
 
               <button 
@@ -243,7 +244,7 @@ export default function BookGallery() {
                   setShowNewModal(false);
                   setSelectedBook(newReleaseBook);
                 }}
-                className="w-full bg-brand-dark-blue text-white py-4 rounded-full font-bold text-[11px] uppercase tracking-widest active:scale-95 transition-all shadow-lg shadow-brand-dark-blue/20"
+                className="w-full bg-brand-dark-blue dark:bg-brand-gold text-white dark:text-[#121212] py-4 rounded-full font-bold text-[11px] uppercase tracking-widest active:scale-95 transition-all shadow-lg shadow-brand-dark-blue/20 dark:shadow-brand-gold/10"
               >
                 Ver Detalles
               </button>

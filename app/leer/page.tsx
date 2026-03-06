@@ -151,7 +151,7 @@ function ReaderContent() {
     setIsPaused(false);
   };
 
-  // FUNCIÓN PARA MOSTRAR ANUNCIO DE ADMOB
+  // FUNCIÓN PARA MOSTRAR ANUNCIO DE ADMOB Y CONTAR INGRESOS
   const showRealAd = async () => {
     if (!Capacitor.isNativePlatform()) return; // Si estás probando en PC, no hace nada
     try {
@@ -161,6 +161,13 @@ function ReaderContent() {
         isTesting: true 
       });
       await AdMob.showInterstitial();
+
+      // AQUÍ OCURRE LA MAGIA PARA COMPARTIR INGRESOS CON OTROS AUTORES
+      if (id) {
+        const { data } = await supabase.from('books').select('ad_views').eq('id', id).single();
+        const currentViews = data?.ad_views || 0;
+        await supabase.from('books').update({ ad_views: currentViews + 1 }).eq('id', id);
+      }
     } catch (e) {
       console.error("No se pudo mostrar el anuncio", e);
     }
@@ -192,7 +199,7 @@ function ReaderContent() {
       setSessionReads((prev) => {
         const newCount = prev + 1;
         if (newCount % 2 === 0) {
-          showRealAd(); // Llama a AdMob
+          showRealAd(); // Llama a AdMob y cuenta en Supabase
         }
         return newCount;
       });
