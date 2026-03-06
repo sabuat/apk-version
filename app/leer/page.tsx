@@ -8,7 +8,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import { Capacitor } from '@capacitor/core';
-import { AdMob } from '@capacitor-community/admob'; // <-- IMPORTAMOS ADMOB
+import { AdMob } from '@capacitor-community/admob';
 
 function ReaderContent() {
   const searchParams = useSearchParams();
@@ -26,7 +26,6 @@ function ReaderContent() {
 
   const [sessionReads, setSessionReads] = useState(0);
 
-  // Estados de Voz y Menú
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [speechSupported, setSpeechSupported] = useState(false);
@@ -43,10 +42,9 @@ function ReaderContent() {
       setSpeechSupported(true);
     }
 
-    // INICIALIZAR ADMOB AL ENTRAR AL LECTOR (Solo si es app nativa)
     if (Capacitor.isNativePlatform()) {
       AdMob.initialize({
-        initializeForTesting: true, // Esto le avisa a Google que estamos haciendo pruebas
+        initializeForTesting: false, 
       }).catch(e => console.error("Error inicializando AdMob", e));
     }
   }, []);
@@ -106,7 +104,6 @@ function ReaderContent() {
     setIsPaused(false);
   }, [currentIdx]);
 
-  // FUNCIONES DE VOZ
   const handleSpeak = () => {
     if (!speechSupported) {
       alert("Para escuchar capítulos, tu teléfono necesita tener activa la lectura por voz.");
@@ -151,18 +148,15 @@ function ReaderContent() {
     setIsPaused(false);
   };
 
-  // FUNCIÓN PARA MOSTRAR ANUNCIO DE ADMOB Y CONTAR INGRESOS
   const showRealAd = async () => {
-    if (!Capacitor.isNativePlatform()) return; // Si estás probando en PC, no hace nada
+    if (!Capacitor.isNativePlatform()) return; 
     try {
-      // Usamos el ID de prueba de Anuncio Intersticial oficial de Google
       await AdMob.prepareInterstitial({
-        adId: 'ca-app-pub-3940256099942544/1033173712',
-        isTesting: true 
+        adId: 'ca-app-pub-6944764501142533/1335629634', // <--- PEGA TU ID REAL AQUÍ
+        isTesting: false 
       });
       await AdMob.showInterstitial();
 
-      // AQUÍ OCURRE LA MAGIA PARA COMPARTIR INGRESOS CON OTROS AUTORES
       if (id) {
         const { data } = await supabase.from('books').select('ad_views').eq('id', id).single();
         const currentViews = data?.ad_views || 0;
@@ -195,11 +189,10 @@ function ReaderContent() {
       setCurrentIdx(currentIdx + 1);
       window.scrollTo({ top: 0, behavior: 'smooth' });
 
-      // CADA DOS CAPÍTULOS MOSTRAMOS EL ANUNCIO
       setSessionReads((prev) => {
         const newCount = prev + 1;
         if (newCount % 2 === 0) {
-          showRealAd(); // Llama a AdMob y cuenta en Supabase
+          showRealAd(); 
         }
         return newCount;
       });
@@ -216,13 +209,13 @@ function ReaderContent() {
   };
 
   if (loading) return (
-    <div className={`flex h-screen items-center justify-center ${nightMode ? 'bg-brand-dark' : 'bg-[#F9F9F7]'}`}>
+    <div className={`flex h-screen items-center justify-center ${nightMode ? 'bg-[#121212]' : 'bg-[#F9F9F7]'}`}>
       <div className="w-8 h-8 border-4 border-brand-gold border-t-transparent rounded-full animate-spin" />
     </div>
   );
 
   if (chapters.length === 0) return (
-    <div className={`flex flex-col items-center justify-center h-screen px-10 text-center ${nightMode ? 'bg-brand-dark text-white' : 'bg-[#F9F9F7]'}`}>
+    <div className={`flex flex-col items-center justify-center h-screen px-10 text-center ${nightMode ? 'bg-[#121212] text-white' : 'bg-[#F9F9F7]'}`}>
       <BookOpen size={48} className="text-brand-gold/20 mb-6" />
       <h2 className="font-serif italic text-2xl text-brand-gold mb-4">PRÓXIMAMENTE</h2>
       <Link href="/home" className="inline-block border-b-2 border-brand-gold text-brand-gold text-[11px] font-bold uppercase tracking-[0.2em] pb-1">Regresar</Link>
@@ -290,7 +283,7 @@ function ReaderContent() {
             </button>
           </div>
 
-          <h1 className={`text-2xl font-serif italic leading-tight text-left transition-colors duration-500 ${nightMode ? 'text-brand-gold' : 'text-brand-dark'}`}>
+          <h1 className={`text-2xl font-serif italic leading-tight text-left transition-colors duration-500 ${nightMode ? 'text-brand-gold' : 'text-gray-200'}`}>
             {currentChapter.title}
           </h1>
           <div className="h-px bg-brand-gold/30 w-full mt-6" />
@@ -313,13 +306,13 @@ function ReaderContent() {
           style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
         >
           {hasPrev ? (
-            <button onClick={handlePrevChapter} className={`inline-block border-b text-[11px] uppercase font-bold pb-1 transition-all ${nightMode ? 'border-brand-gold text-brand-gold' : 'border-black text-black hover:text-brand-gold'}`}>
+            <button onClick={handlePrevChapter} className={`inline-block border-b text-[11px] uppercase font-bold pb-1 transition-all ${nightMode ? 'border-brand-gold text-brand-gold' : 'border-gray-400 text-gray-400 hover:text-brand-gold'}`}>
               <ChevronLeft size={12} className="inline mr-1 mb-0.5" /> Anterior
             </button>
           ) : <div />}
 
           {hasNext ? (
-            <button onClick={handleNextChapter} className={`inline-block border-b text-[11px] uppercase font-bold pb-1 transition-all ${nightMode ? 'border-brand-gold text-brand-gold' : 'border-black text-black hover:text-brand-gold'}`}>
+            <button onClick={handleNextChapter} className={`inline-block border-b text-[11px] uppercase font-bold pb-1 transition-all ${nightMode ? 'border-brand-gold text-brand-gold' : 'border-gray-400 text-gray-400 hover:text-brand-gold'}`}>
               Siguiente <ChevronRight size={12} className="inline ml-1 mb-0.5" />
             </button>
           ) : (
@@ -343,7 +336,6 @@ function ReaderContent() {
         </footer>
       </article>
 
-      {/* PANEL LATERAL: MENÚ DE CAPÍTULOS */}
       <AnimatePresence>
         {showChapterMenu && (
           <motion.div 
@@ -355,7 +347,7 @@ function ReaderContent() {
               initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
               onClick={(e) => e.stopPropagation()}
-              className={`w-[85%] max-w-sm h-full shadow-2xl flex flex-col border-l border-brand-gold/10 ${nightMode ? 'bg-[#121212]' : 'bg-brand-bg'}`}
+              className={`w-[85%] max-w-sm h-full shadow-2xl flex flex-col border-l border-brand-gold/10 ${nightMode ? 'bg-[#121212]' : 'bg-[#F9F9F7]'}`}
             >
               <div 
                 className="p-6 border-b border-brand-gold/10 flex justify-between items-center shrink-0" 

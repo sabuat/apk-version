@@ -29,7 +29,7 @@
         </provider>
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713" />
+            android:value="ca-app-pub-6944764501142533~7901037989" />
     </application>
 
     <!-- Permissions -->
