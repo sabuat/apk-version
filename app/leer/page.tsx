@@ -283,7 +283,7 @@ function ReaderContent() {
             </button>
           </div>
 
-          <h1 className={`text-2xl font-serif italic leading-tight text-left transition-colors duration-500 ${nightMode ? 'text-brand-gold' : 'text-gray-200'}`}>
+          <h1 className={`text-2xl font-serif italic leading-tight text-left transition-colors duration-500 ${nightMode ? 'text-brand-gold' : 'text-gray-800'}`}>
             {currentChapter.title}
           </h1>
           <div className="h-px bg-brand-gold/30 w-full mt-6" />
